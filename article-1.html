@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>前端性能优化的 10 个实用技巧 - 我的博客</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#3B82F6',
+            secondary: '#64748B',
+            accent: '#10B981',
+            dark: '#1E293B',
+            light: '#F8FAFC'
+          },
+          fontFamily: {
+            inter: ['Inter', 'sans-serif'],
+          },
+        },
+      }
+    }
+  </script>
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .content-auto {
+        content-visibility: auto;
+      }
+      .blog-card-hover {
+        @apply transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
+      }
+      .nav-link {
+        @apply text-gray-700 hover:text-primary transition-colors duration-200;
+      }
+      .btn-primary {
+        @apply bg-primary hover:bg-primary/90 text-white font-medium py-2 px-4 rounded-md transition-all duration-200;
+      }
+      .btn-outline {
+        @apply border border-primary text-primary hover:bg-primary hover:text-white font-medium py-2 px-4 rounded-md transition-all duration-200;
+      }
+      .article-content h2 {
+        @apply text-2xl font-bold mb-4 mt-8;
+      }
+      .article-content h3 {
+        @apply text-xl font-bold mb-3 mt-6;
+      }
+      .article-content p {
+        @apply mb-4 text-gray-700 leading-relaxed;
+      }
+      .article-content ul {
+        @apply list-disc pl-6 mb-4;
+      }
+      .article-content ol {
+        @apply list-decimal pl-6 mb-4;
+      }
+      .article-content li {
+        @apply mb-2 text-gray-700;
+      }
+      .article-content code {
+        @apply bg-gray-100 px-1 py-0.5 rounded text-sm font-mono;
+      }
+      .article-content pre {
+        @apply bg-gray-800 text-white p-4 rounded-md overflow-x-auto mb-4;
+      }
+      .article-content blockquote {
+        @apply border-l-4 border-primary pl-4 italic my-4;
+      }
+    }
+  </style>
+</head>
+<body class="font-inter bg-light text-dark">
+  <!-- 导航栏 -->
+  <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-sm shadow-sm">
+    <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+      <a href="index.html" class="text-2xl font-bold text-primary flex items-center">
+        <i class="fa fa-pencil-square-o mr-2"></i>
+        <span>我的博客</span>
+      </a>
+      
+      <!-- 桌面导航 -->
+      <nav class="hidden md:flex space-x-8">
+        <a href="index.html" class="nav-link font-medium">首页</a>
+        <a href="articles.html" class="nav-link font-medium">文章</a>
+        <a href="categories.html" class="nav-link font-medium">分类</a>
+        <a href="about.html" class="nav-link font-medium">关于我</a>
+      </nav>
+      
+      <!-- 移动端菜单按钮 -->
+      <button id="menuBtn" class="md:hidden text-gray-700 focus:outline-none">
+        <i class="fa fa-bars text-xl"></i>
+      </button>
+    </div>
+    
+    <!-- 移动端导航菜单 -->
+    <div id="mobileMenu" class="md:hidden hidden bg-white border-t">
+      <div class="container mx-auto px-4 py-2 flex flex-col space-y-3">
+        <a href="index.html" class="nav-link py-2">首页</a>
+        <a href="articles.html" class="nav-link py-2">文章</a>
+        <a href="categories.html" class="nav-link py-2">分类</a>
+        <a href="about.html" class="nav-link py-2">关于我</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container mx-auto px-4 py-8">
+    <!-- 面包屑导航 -->
+    <nav class="flex mb-8" aria-label="面包屑">
+      <ol class="inline-flex items-center space-x-1 md:space-x-3">
+        <li class="inline-flex items-center">
+          <a href="index.html" class="text-gray-500 hover:text-primary">
+            <i class="fa fa-home mr-1"></i>首页
+          </a>
+        </li>
+        <li>
+          <div class="flex items-center">
+            <i class="fa fa-angle-right text-gray-400 mx-2"></i>
+            <a href="articles.html" class="text-gray-500 hover:text-primary">文章</a>
+          </div>
+        </li>
+        <li>
+          <div class="flex items-center">
+            <i class="fa fa-angle-right text-gray-400 mx-2"></i>
+            <span class="text-gray-700 font-medium">前端性能优化的 10 个实用技巧</span>
+          </div>
+        </li>
+      </ol>
+    </nav>
+    
+    <!-- 文章内容 -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <!-- 主内容区 -->
+      <article class="lg:col-span-8">
+        <div class="bg-white rounded-2xl shadow-sm overflow-hidden mb-8">
+          <img src="https://picsum.photos/1200/600?random=1" alt="前端性能优化" class="w-full h-64 md:h-80 object-cover">
+          <div class="p-8">
+            <div class="flex flex-wrap items-center text-sm text-gray-500 mb-4">
+              <span class="flex items-center mr-4 mb-2">
+                <i class="fa fa-calendar-o mr-1"></i> 2025-06-20
+              </span>
+              <span class="flex items-center mr-4 mb-2">
+                <i class="fa fa-user-o mr-1"></i> 张小明
+              </span>
+              <span class="flex items-center mr-4 mb-2">
+                <i class="fa fa-folder-o mr-1"></i> 
+                <a href="category-frontend.html" class="text-primary hover:underline">前端开发</a>
+              </span>
+              <span class="flex items-center mb-2">
+                <i class="fa fa-eye mr-1"></i> 1,245 阅读
+              </span>
+            </div>
+            
+            <h1 class="text-3xl font-bold mb-6">前端性能优化的 10 个实用技巧</h1>
+            
+            <div class="article-content">
+              <p>在当今竞争激烈的网络世界中，网站性能直接影响用户体验、转化率和搜索引擎排名。根据 Google 的研究，页面加载时间每增加 1 秒，转化率就会下降 7%。因此，优化前端性能至关重要。</p>
+              
+              <p>在这篇文章中，我将分享 10 个提高网站性能的实用技巧，这些技巧已经在多个项目中验证过，可以显著提升网站加载速度和用户体验。</p>
+              
+              <h2>1. 压缩和合并文件</h2>
+              
+              <p>减少 HTTP 请求是提高网站性能的最有效方法之一。通过合并和压缩 CSS、JavaScript 文件，可以显著减少页面加载时间。</p>
+              
+              <p>例如，可以使用工具如 <code>Webpack</code>、<code>Rollup</code> 或 <code>Gulp</code> 来合并和压缩文件：</p>
+              
+              <pre><code>// webpack.config.js 示例
+const path = require('path');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
+
+module.exports = {
+  entry: './src/index.js',
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: 'bundle.[contenthash].js'
+  },
+  optimization: {
+    minimizer: [new TerserPlugin()],
+  },
+  plugins: [
+    new MiniCssExtractPlugin({
+      filename: '[name].[contenthash].css'
+    })
+  ],
+  module: {
+    rules: [
+      {
+        test: /\.css$/,
+        use: [MiniCssExtractPlugin.loader, 'css-loader']
+      }
+    ]
+  }
+};</code></pre>
+              
+              <h2>2. 优化图像</h2>
+              
+              <p>图像通常占网页总大小的很大比例。使用现代图像格式（如 WebP）和适当的压缩可以显著减少图像大小，同时保持视觉质量。</p>
+              
+              <p>以下是一些优化图像的方法：</p>
+              
+              <ul>
+                <li>使用 <code>ImageMagick</code> 或 <code>Sharp</code> 等工具压缩图像</li>
+                <li>为不同设备提供响应式图像</li>
+                <li>考虑使用 WebP 格式替代 JPEG 和 PNG</li>
+                <li>对大图像使用懒加载</li>
+              </ul>
+              
+              <pre><code>&lt;img 
+  src="image.jpg" 
+  srcset="image-small.jpg 480w, image-medium.jpg 768w, image-large.jpg 1200w" 
+  sizes="(max-width: 600px) 480px, 800px" 
+  alt="示例图像"
+  loading="lazy"
+&gt;</code></pre>
+              
+              <h2>3. 使用 CDN</h2>
+              
+              <p>内容分发网络（CDN）可以将网站内容分发到全球多个地理位置的服务器，从而减少用户与服务器之间的物理距离，加快内容加载速度。</p>
+              
+              <p>许多流行的库和框架都可以通过 CDN 获取，例如：</p>
+              
+              <pre><code>&lt;!-- 使用 CDN 加载 jQuery --&gt;
+&lt;script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"&gt;&lt;/script&gt;</code></pre>
+              
+              <h2>4. 懒加载</h2>
+              
+              <p>懒加载是一种延迟加载非关键资源的技术，直到用户需要它们时才加载。这对于图像、脚本和其他非首屏内容特别有用。</p>
+              
+              <p>现代浏览器支持原生图像懒加载：</p>
+              
+              <pre><code>&lt;img src="image.jpg" alt="示例图像" loading="lazy"&gt;</code></pre>
+              
+              <p>对于 JavaScript 模块，可以使用动态导入：</p>
+              
+              <pre><code>document.getElementById('load-more').addEventListener('click', async () => {
+  const module = await import('./heavy-module.js');
+  module.init();
+});</code></pre>
+              
+              <h2>5. 优化 CSS 加载</h2>
+              
+              <p>CSS 是渲染阻塞资源，这意味着浏览器在下载和解析 CSS 之前不会渲染页面。因此，优化 CSS 加载至关重要。</p>
+              
+              <p>以下是一些优化 CSS 加载的技巧：</p>
+              
+              <ul>
+                <li>保持 CSS 文件小而精</li>
+                <li>使用关键 CSS（Critical CSS）技术，将首屏所需的 CSS 内联到 HTML 中</li>
+                <li>使用媒体查询加载特定于设备的 CSS</li>
+                <li>避免使用 @import 语句</li>
+              </ul>
+              
+              <h2>6. 实施缓存策略</h2>
+              
+              <p>合理的缓存策略可以避免用户每次访问网站时都下载相同的资源。使用 HTTP 缓存头（如 <code>Cache-Control</code> 和 <code>ETag</code>）可以控制资源的缓存方式。</p>
+              
+              <p>对于静态资源，可以设置较长的缓存时间：</p>
+              
+              <pre><code>Cache-Control: max-age=31536000</code></pre>
+              
+              <p>对于动态资源，可以使用验证机制：</p>
+              
+              <pre><code>ETag: "123456789"</code></pre>
+              
+              <h2>7. 优化字体加载</h2>
+              
+              <p>自定义字体可以增强网站的视觉效果，但如果加载不当，可能会导致性能问题。以下是一些优化字体加载的技巧：</p>
+              
+              <ul>
+                <li>使用 WOFF2 格式，它比 TTF 和 WOFF 更小</li>
+                <li>只包含需要的字符集</li>
+                <li>使用 font-display 属性控制字体加载行为</li>
+              </ul>
+              
+              <pre><code>@font-face {
+  font-family: 'Inter';
+  src: url('Inter.woff2') format('woff2');
+  font-display: swap;
+}</code></pre>
+              
+              <h2>8. 减少重排和重绘</h2>
+              
+              <p>重排（reflow）和重绘（repaint）是浏览器渲染页面时的高成本操作。频繁的重排和重绘会导致页面卡顿。</p>
+              
+              <p>以下是一些减少重排和重绘的方法：</p>
+              
+              <ul>
+                <li>批量修改 DOM 样式</li>
+                <li>使用 <code>requestAnimationFrame</code> 处理动画</li>
+                <li>避免频繁读取和修改 DOM 布局信息</li>
+                <li>使用 <code>transform</code> 和 <code>opacity</code> 进行动画，因为它们不会触发重排</li>
+              </ul>
+              
+              <h2>9. 使用服务工作者（Service Workers）</h2>
+              
+              <p>服务工作者可以缓存网站资源，使网站在离线状态下也能正常工作，并提高后续访问的加载速度。</p>
+              
+              <p>以下是一个简单的服务工作者示例：</p>
+              
+              <pre><code>// service-worker.js
+self.addEventListener('install', event => {
+  event.waitUntil(
+    caches.open('my-cache-v1').then(cache => {
+      return cache.addAll([
+        '/',
+        '/index.html',
+        '/style.css',
+        '/main.js',
+        '/logo.png'
+      ]);
+    })
+  );
+});
+
+self.addEventListener('fetch', event => {
+  event.respondWith(
+    caches.match(event.request).then(response => {
+      return response || fetch(event.request);
+    })
+  );
+});</code></pre>
+              
+              <h2>10. 监控和测试性能</h2>
+              
+              <p>最后，定期监控和测试网站性能至关重要。使用工具如 Google Lighthouse、WebPageTest 和 Chrome DevTools 来识别性能瓶颈并跟踪改进。</p>
+              
+              <p>通过分析性能报告，你可以找出哪些优化措施最有效，并持续改进网站性能。</p>
+              
+              <h2>结论</h2>
+              
+              <p>优化前端性能是一个持续的过程，而不是一次性的任务。通过实施上述 10 个实用技巧，你可以显著提高网站的加载速度和用户体验。记住，性能优化不仅仅是技术问题，更是用户体验问题。</p>
+              
+              <p>希望这些技巧对你有所帮助！如果你有任何问题或建议，请在下方评论区留言。</p>
+            </div>
+            
+            <!-- 标签 -->
+            <div class="mt-8 pt-6 border-t border-gray-100">
+              <div class="flex flex-wrap gap-2">
+                <span class="text-sm font-medium text-gray-500">标签:</span>
+                <a href="#" class="text-sm bg-blue-100 text-primary px-3 py-1 rounded-full hover:bg-blue-200 transition-colors">前端开发</a>
+                <a href="#" class="text-sm bg-blue-100 text-primary px-3 py-1 rounded-full hover:bg-blue-200 transition-colors">性能优化</a>
+                <a href="#" class="text-sm bg-blue-100 text-primary px-3 py-1 rounded-full hover:bg-blue-200 transition-colors">Web性能</a>
+                <a href="#" class="text-sm bg-blue-100 text-primary px-3 py-1 rounded-full hover:bg-blue-200 transition-colors">前端工程</a>
+              </div>
+            </div>
+            
+            <!-- 作者信息 -->
+            <div class="mt-8 pt-6 border-t border-gray-100 flex flex-col md:flex-row gap-4 items-center">
+              <img src="https://picsum.photos/200/200?random=user" alt="张小明" class="w-16 h-16 rounded-full object-cover">
+              <div class="text-center md:text-left">
+                <h3 class="font-bold">张小明</h3>
+                <p class="text-gray-600 text-sm">全栈开发者 & 技术作家</p>
+                <p class="text-gray-600 text-sm mt-1">拥有 8 年软件开发经验，目前专注于前端框架和后端服务的开发。</p>
+                <div class="flex justify-center md:justify-start space-x-3 mt-2">
+                  <a href="#" class="text-gray-500 hover:text-primary transition-colors"><i class="fa fa-github"></i></a>
+                  <a href="#" class="text-gray-500 hover:text-primary transition-colors"><i class="fa fa-twitter"></i></a>
+                  <a href="#" class="text-gray-500 hover:text-primary transition-colors"><i class="fa fa-linkedin"></i></a>
+                </div>
+              </div>
+            </div>
+            
+            <!-- 评论区 -->
+            <div class="mt-12">
+              <h3 class="text-xl font-bold mb-6">评论 (12)</h3>
+              
+              <!-- 评论表单 -->
+              <div class="bg-gray-50 p-6 rounded-xl mb-8">
+                <h4 class="font-medium mb-4">发表评论</h4>
+                <form>
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                      <label for="name" class="block text-sm font-medium text-gray-700 mb-1">姓名</label>
+                      <input type="text" id="name" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50">
+                    </div>
+                    <div>
+                      <label for="email" class="block text-sm font-medium text-gray-700 mb-1">邮箱</label>
+                      <input type="email" id="email" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50">
+                    </div>
+                  </div>
+                  <div class="mb-4">
+                    <label for="comment" class="block text-sm font-medium text-gray-700 mb-1">评论内容</label>
+                    <textarea id="comment" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"></textarea>
+                  </div>
+                  <button type="submit" class="btn-primary">提交评论</button>
+                </form>
+              </div>
+              
+              <!-- 评论列表 -->
+              <div class="space-y-6">
+                <!-- 评论 1 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm">
+                  <div class="flex items-start gap-4">
+                    <img src="https://picsum.photos/200/200?random=100" alt="李华" class="w-12 h-12 rounded-full object-cover">
+                    <div>
+                      <div class="flex items-center justify-between mb-1">
+                        <h4 class="font-medium">李华</h4>
+                        <span class="text-sm text-gray-500">2025-06-22</span>
+                      </div>
+                      <p class="text-gray-700">非常实用的文章！我特别喜欢关于图像优化和懒加载的部分。这些技巧确实能显著提升网站性能。</p>
+                      <button class="text-primary hover:text-primary/80 text-sm mt-2 flex items-center">
+                        <i class="fa fa-reply mr-1"></i> 回复
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- 评论 2 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm">
+                  <div class="flex items-start gap-4">
+                    <img src="https://picsum.photos/200/200?random=101" alt="王强" class="w-12 h-12 rounded-full object-cover">
+                    <div>
+                      <div class="flex items-center justify-between mb-1">
+                        <h4 class="font-medium">王强</h4>
+                        <span class="text-sm text-gray-500">2025-06-21</span>
+                      </div>
+                      <p class="text-gray-700">感谢分享这些前端性能优化的技巧！我有一个问题：对于大型项目，如何平衡性能优化和开发效率？</p>
+                      <button class="text-primary hover:text-primary/80 text-sm mt-2 flex items-center">
+                        <i class="fa fa-reply mr-1"></i> 回复
+                      </button>
+                      
+                      <!-- 回复 -->
+                      <div class="mt-4 pl-4 border-l-2 border-gray-100">
+                        <div class="flex items-start gap-3">
+                          <img src="https://picsum.photos/200/200?random=user" alt="张小明" class="w-10 h-10 rounded-full object-cover">
+                          <div>
+                            <div class="flex items-center justify-between mb-1">
+                              <h4 class="font-medium flex items-center">
+                                <span>张小明</span>
+                                <span class="ml-2 text-xs bg-primary/10 text-primary px-2 py-0.5 rounded">作者</span>
+                              </h4>
+                              <span class="text-sm text-gray-500">2025-06-22</span>
+                            </div>
+                            <p class="text-gray-700">这是一个很好的问题。在大型项目中，我建议采用渐进式优化策略：首先关注关键路径和用户体验瓶颈，然后逐步优化其他部分。同时，集成自动化工具和性能监控，确保在开发过程中不会引入新的性能问题。</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- 加载更多评论 -->
+                <button class="w-full py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">
+                  加载更多评论
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+      
+      <!-- 侧边栏 -->
+      <aside class="lg:col-span-4 space-y-8">
+        <!-- 搜索框 -->
+        <div class="bg-white rounded-xl shadow-sm p-6">
+          <h3 class="text-lg font-bold mb-4">搜索</h3>
+          <div class="relative">
+            <input type="text" placeholder="搜索文章..." class="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/50">
+            <i class="fa fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+          </div>
+        </div>
+        
+        <!-- 分类 -->
+        <div class="bg-white rounded-xl shadow-sm p-6">
+          <h3 class="text-lg font-bold mb-4">文章分类</h3>
+          <ul class="space-y-3">
+            <li class="flex justify-between items-center">
+              <a href="category-frontend.html" class="text-gray-700 hover:text-primary transition-colors">前端开发</a>
+              <span class="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full">24</span>
+            </li>
+            <li class="flex justify-between items-center">
+              <a href="category-backend.html" class="text-gray-700 hover:text-primary transition-colors">后端开发</a>
+              <span class="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full">18</span>
+            </li>
+            <li class="flex justify-between items-center">
+              <a href="category-devops.html" class="text-gray-700 hover:text-primary transition-colors">DevOps</a>
+              <span class="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full">12</span>
+            </li>
+            <li class="flex justify-between items-center">
+              <a href="category-data-science.html" class="text-gray-700 hover:text-primary transition-colors">数据科学</a>
+              <span class="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full">9</span>
+            </li>
+            <li class="flex justify-between items-center">
+              <a href="category-miscellaneous.html" class="text-gray-700 hover:text-primary transition-colors">杂项</a>
+              <span class="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full">7</span>
+            </li>
+          </ul>
+        </div>
+        
+        <!-- 最新文章 -->
+        <div class="bg-white rounded-xl shadow-sm p-6">
+          <h3 class="text-lg font-bold mb-4">最新文章</h3>
+          <div class="space-y-4">
+            <a href="article-1.html" class="flex gap-3 group">
+              <img src="https://picsum.photos/200/200?random=10" alt="前端性能优化" class="w-20 h-20 object-cover rounded-lg group-hover:opacity-90 transition-opacity">
+              <div>
+                <h4 class="font-medium text-gray-800 group-hover:text-primary transition-colors line-clamp-2">前端性能优化的 10 个实用技巧</h4>
+                <p class="text-sm text-gray-500 mt-1">2025-06-20</p>
+              </div>
+            </a>
+            <a href="article-2.html" class="flex gap-3 group">
+              <img src="https://picsum.photos/200/200?random=11" alt="React Hooks" class="w-20 h-20 object-cover rounded-lg group-hover:opacity-90 transition-opacity">
+              <div>
+                <h4 class="font-medium text-gray-800 group-hover:text-primary transition-colors line-clamp-2">深入理解 React Hooks：从原理到实践</h4>
+                <p class="text-sm text-gray-500 mt-1">2025-06-15</p>
+              </div>
+            </a>
+            <a href="article-3.html" class="flex gap-3 group">
+              <img src="https://picsum.photos/200/200?random=12" alt="Python自动化" class="w-20 h-20 object-cover rounded-lg group-hover:opacity-90 transition-opacity">
+              <div>
+                <h4 class="font-medium text-gray-800 group-hover:text-primary transition-colors line-clamp-2">Python 自动化测试入门指南</h4>
+                <p class="text-sm text-gray-500 mt-1">2025-06-10</p>
+              </div>
+            </a>
+            <a href="article-4.html" class="flex gap-3 group">
+              <img src="https://picsum.photos/200/200?random=13" alt="Node.js性能优化" class="w-20 h-20 object-cover rounded-lg group-hover:opacity-90 transition-opacity">
+              <div>
+                <h4 class="font-medium text-gray-800 group-hover:text-primary transition-colors line-clamp-2">Node.js 性能优化：从理论到实践</h4>
+                <p class="text-sm text-gray-500 mt-1">2025-06-05</p>
+              </div>
+            </a>
+            <a href="article-5.html" class="flex gap-3 group">
+              <img src="https://picsum.photos/200/200?random=14" alt="Docker教程" class="w-20 h-20 object-cover rounded-lg group-hover:opacity-90 transition-opacity">
+              <div>
+                <h4 class="font-medium text-gray-800 group-hover:text-primary transition-colors line-clamp-2">Docker 入门到精通：容器化实战指南</h4>
+                <p class="text-sm text-gray-500 mt-1">2025-05-30</p>
+              </div>
+            </a>
+          </div>
+        </div>
+        
+        <!-- 标签云 -->
+        <div class="bg-white rounded-xl shadow-sm p-6">
+          <h3 class="text-lg font-bold mb-4">标签云</h3>
+          <div class="flex flex-wrap gap-2">
+            <a href="#" class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm hover:bg-primary hover:text-white transition-colors">JavaScript</a>
+            <a href="#" class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm hover:bg-primary hover:text-white transition-colors">React</a>
+            <a href="#" class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm hover:bg-primary hover:text-white transition-colors">Vue</a>
+            <a href="#" class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm hover:bg-primary hover:text-white transition-colors">Node.js</a>
+            <a href="#" class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm hover:bg-primary hover:text-white transition-colors">Python</a>
+            <a href="#" class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm hover:bg-primary hover:text-white transition-colors">性能优化</a>
+            <a href="#" class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm hover:bg-primary hover:text-white transition-colors">前端开发</a>
+            <a href="#" class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm hover:bg-primary hover:text-white transition-colors">后端开发</a>
+            <a href="#" class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm hover:bg-primary hover:text-white transition-colors">DevOps</a>
+            <a href="#" class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm hover:bg-primary hover:text-white transition-colors">数据科学</a>
+            <a href="#" class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm hover:bg-primary hover:text-white transition-colors">Webpack</a>
+            <a href="#" class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm hover:bg-primary hover:text-white transition-colors">Docker</a>
+            <a href="#" class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm hover:bg-primary hover:text-white transition-colors">Git</a>
+            <a href="#" class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm hover:bg-primary hover:text-white transition-colors">数据库</a>
+          </div>
+        </div>
+        
+        <!-- 订阅 -->
+        <div class="bg-primary/5 rounded-xl p-6">
+          <h3 class="text-lg font-bold mb-4 text-primary">订阅我的博客</h3>
+          <p class="text-gray-600 mb-4">获取最新的技术文章和项目更新，直接发送到你的邮箱</p>
+          <form>
+            <input type="email" placeholder="输入你的邮箱地址" class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/50 mb-3">
+            <button type="submit" class="btn-primary w-full">订阅</button>
+          </form>
+          <p class="text-xs text-gray-500 mt-3">我们尊重你的隐私，绝不会分享你的邮箱地址</p>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="bg-dark text-white py-12">
+    <div class="container mx-auto px-4">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div>
+          <h3 class="text-xl font-bold mb-4 flex items-center">
+            <i class="fa fa-pencil-square-o mr-2"></i>
+            <span>我的博客</span>
+          </h3>
+          <p class="text-gray-400 mb-4">分享我的编程经验、项目心得和创意想法</p>
+          <div class="flex space-x-4">
+            <a href="#" class="text-gray-400 hover:text-white transition-colors"><i class="fa fa-github"></i></a>
+            <a href="#" class="text-gray-400 hover:text-white transition-colors"><i class="fa fa-twitter"></i></a>
+            <a href="#" class="text-gray-400 hover:text-white transition-colors"><i class="fa fa-linkedin"></i></a>
+            <a href="#" class="text-gray-400 hover:text-white transition-colors"><i class="fa fa-instagram"></i></a>
+          </div>
+        </div>
+        
+        <div>
+          <h3 class="text-lg font-bold mb-4">快速链接</h3>
+          <ul class="space-y-2">
+            <li><a href="index.html" class="text-gray-400 hover:text-white transition-colors">首页</a></li>
+            <li><a href="articles.html" class="text-gray-400 hover:text-white transition-colors">文章</a></li>
+            <li><a href="categories.html" class="text-gray-400 hover:text-white transition-colors">分类</a></li>
+            <li><a href="about.html" class="text-gray-400 hover:text-white transition-colors">关于我</a></li>
+            <li><a href="contact.html" class="text-gray-400 hover:text-white transition-colors">联系我</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h3 class="text-lg font-bold mb-4">文章分类</h3>
+          <ul class="space-y-2">
+            <li><a href="category-frontend.html" class="text-gray-400 hover:text-white transition-colors">前端开发</a></li>
+            <li><a href="category-backend.html" class="text-gray-400 hover:text-white transition-colors">后端开发</a></li>
+            <li><a href="category-devops.html" class="text-gray-400 hover:text-white transition-colors">DevOps</a></li>
+            <li><a href="category-data-science.html" class="text-gray-400 hover:text-white transition-colors">数据科学</a></li>
+            <li><a href="category-miscellaneous.html" class="text-gray-400 hover:text-white transition-colors">杂项</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h3 class="text-lg font-bold mb-4">联系方式</h3>
+          <ul class="space-y-2">
+            <li class="flex items-start">
+              <i class="fa fa-envelope-o mt-1 mr-3 text-gray-400"></i>
+              <span class="text-gray-400">contact@myblog.com</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fa fa-map-marker mt-1 mr-3 text-gray-400"></i>
+              <span class="text-gray-400">北京市海淀区</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="border-t border-gray-800 mt-10 pt-6 text-center text-gray-500 text-sm">
+        <p>© 2025 我的博客. 保留所有权利.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // 移动端菜单切换
+    const menuBtn = document.getElementById('menuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    
+    menuBtn.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+      menuBtn.innerHTML = mobileMenu.classList.contains('hidden') 
+        ? '<i class="fa fa-bars text-xl"></i>' 
+        : '<i class="fa fa-times text-xl"></i>';
+    });
+    
+    // 滚动时导航栏样式变化
+    const header = document.querySelector('header');
+    
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 50) {
+        header.classList.add('shadow-md');
+        header.classList.remove('shadow-sm');
+      } else {
+        header.classList.remove('shadow-md');
+        header.classList.add('shadow-sm');
+      }
+    });
+    
+    // 平滑滚动
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        const targetId = this.getAttribute('href');
+        if (targetId === '#') return;
+        
+        const targetElement = document.querySelector(targetId);
+        if (targetElement) {
+          targetElement.scrollIntoView({
+            behavior: 'smooth'
+          });
+        }
+      });
+    });
+    
+    // 代码高亮
+    document.querySelectorAll('pre code').forEach((block) => {
+      hljs.highlightBlock(block);
+    });
+  </script>
+</body>
+</html>
+  

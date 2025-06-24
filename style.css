@@ -1,0 +1,227 @@
+/* 全局样式 */
+body {
+  font-family: 'Inter', sans-serif;
+  line-height: 1.6;
+}
+
+/* 导航栏样式 */
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+}
+
+nav ul {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+nav ul li {
+  margin-left: 1.5rem;
+}
+
+nav ul li a {
+  color: #333;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+nav ul li a:hover {
+  color: #3B82F6;
+}
+
+/* 文章卡片样式 */
+.article-card {
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.article-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.article-card img {
+  width: 100%;
+  height: 200px;
+  object-cover: cover;
+}
+
+.article-card-content {
+  padding: 1.5rem;
+}
+
+.article-card-title {
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.article-card-meta {
+  color: #64748B;
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+}
+
+.article-card-excerpt {
+  color: #475569;
+  margin-bottom: 1rem;
+}
+
+/* 按钮样式 */
+.btn {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  text-decoration: none;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.btn-primary {
+  background-color: #3B82F6;
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #2563EB;
+}
+
+.btn-outline {
+  border: 1px solid #3B82F6;
+  color: #3B82F6;
+}
+
+.btn-outline:hover {
+  background-color: #3B82F6;
+  color: white;
+}
+
+/* 响应式布局 */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.grid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .grid-cols-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 768px) {
+  .grid-cols-3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* 侧边栏样式 */
+.sidebar-widget {
+  margin-bottom: 2rem;
+}
+
+.sidebar-widget h3 {
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.sidebar-widget ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.sidebar-widget ul li {
+  margin-bottom: 0.5rem;
+}
+
+.sidebar-widget ul li a {
+  color: #333;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.sidebar-widget ul li a:hover {
+  color: #3B82F6;
+}
+
+/* 评论区样式 */
+.comment {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.comment:last-child {
+  border-bottom: none;
+}
+
+.comment-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.comment-author {
+  font-weight: bold;
+  margin-right: 0.5rem;
+}
+
+.comment-date {
+  color: #64748B;
+  font-size: 0.875rem;
+}
+
+.comment-content {
+  color: #475569;
+}
+
+/* 表单样式 */
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.25rem;
+  transition: border-color 0.3s;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #3B82F6;
+}
+
+.form-textarea {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.25rem;
+  transition: border-color 0.3s;
+  resize: vertical;
+}
+
+.form-textarea:focus {
+  outline: none;
+  border-color: #3B82F6;
+}
+  
